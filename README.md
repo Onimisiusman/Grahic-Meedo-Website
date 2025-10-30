@@ -1,5 +1,6 @@
 # Grahic-Meedo-Website
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -68,10 +69,12 @@
     </section>
 
     <!-- Contact Section -->
+    
     <section id="contact" class="contact">
         <h2>Get In Touch</h2>
         <form id="contactForm">
             <input type="text" id="name" placeholder="Your Name" required>
+            
  <textarea id="message" placeholder="Your Message" required></textarea>
             <button type="submit" class="btn">Send Message</button>
         </form>
