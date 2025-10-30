@@ -1,0 +1,206 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 80px;
+    background: #000;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+}
+.logo span {
+    color: #ff4d4d;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
+}
+nav ul li a:hover,
+nav ul li a.active {
+    color: #ff4d4d;
+}
+/* Hero Section */
+.hero {
+    height: 90vh;
+    background: url('https://i.pinimg.com/736x/10/a6/4e/10a64e7d6cf4115273e730127d341676.jpg') center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+.hero-text h1 {
+    font-size: 3rem;
+}
+.hero-text p {
+    margin: 15px 0;
+    font-size: 1.2rem;
+}
+.btn {
+    background: #ff4d4d;
+    color: #fff;
+    padding: 10px 25px;
+    border: none;
+border-radius: 5px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.btn:hover {
+    background: #e63e3e;
+}
+
+/* About */
+.about {
+    padding: 80px 15%;
+    background: #f5f5f5;
+    text-align: center;
+}
+.about h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+.about p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Portfolio */
+.portfolio {
+  padding: 80px 10%;
+    background: #fff;
+    text-align: center;
+}
+.portfolio h2 {
+    font-size: 2rem;
+    margin-bottom: 40px;
+}
+.portfolio-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+.card {
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+
+.card h3 {
+    padding: 15px;
+    color: #333;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Contact */
+.contact {
+    background: #000;
+    color: white;
+    padding: 80px 15%;
+    text-align: center;
+}
+.contact h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+.card h3 {
+    padding: 15px;
+    color: #333;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Contact */
+.contact {
+    background: #000;
+    color: white;
+    padding: 80px 15%;
+    text-align: center;
+}
+.contact h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+button:hover {
+    background: #e63e3e;
+}
+.success {
+    margin-top: 10px;
+    color: #00ff7f;
+}
+
+/* Footer */
+footer {
+    background: #111;
+    color: #aaa;
+    padding: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+.like-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding-bottom: 15px;
+}
+
+.like-btn {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.like-btn:hover {
+    transform: scale(1.2);
+}
+
+.like-btn.liked {
+    color: #ff4d4d;
+}
+
+.like-count {
+    font-size: 1.1rem;
+    color: #333;
+}
