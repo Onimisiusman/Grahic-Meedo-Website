@@ -4,84 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meedo Graphic - Portfolio</title>
+    <meta name="description" content="Portfolio of Meedo, a graphic and web designer creating logos, posters and digital marketing visuals.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Header Section -->
-    <header>
-        <div class="logo">Meedo<span>Graphic</span></div>
+    <header id="header">
+        <a href="#home" class="logo">Meedo<span>Graphic</span></a>
         <nav>
-            <ul>
+            <ul id="navList">
                 <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
                 <li><a href="#portfolio">Portfolio</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
     </header>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-text">
-            <h1>Creative Graphic Designer</h1>
-            <p>Turning your ideas into stunning visuals</p>
-            <a href="#portfolio" class="btn">View My Work</a>
+            <p class="eyebrow">Graphic &amp; Web Designer</p>
+            <h1>Turning ideas into <span>stunning visuals</span></h1>
+            <p class="lead">Logos, posters and brand systems that make people stop scrolling.</p>
+            <div class="hero-actions">
+                <a href="#portfolio" class="btn">View My Work</a>
+                <a href="#contact" class="btn btn-ghost">Hire Me</a>
+            </div>
+            <ul class="stats">
+                <li><strong>120+</strong><span>Projects</span></li>
+                <li><strong>60+</strong><span>Clients</span></li>
+                <li><strong>5 yrs</strong><span>Experience</span></li>
+            </ul>
+        </div>
+        <a href="#about" class="scroll-hint" aria-label="Scroll to about section"></a>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+        <div class="section-head">
+            <p class="eyebrow">About</p>
+            <h2>Design with intent</h2>
+        </div>
+        <p class="about-text">Hi, I’m <strong>Meedo</strong>, a passionate graphic and web designer. I specialize in creating clean, modern, and visually appealing designs that help brands stand out online. I’ve worked with clients to design logos, posters, and digital marketing visuals.</p>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services section">
+        <div class="section-head">
+            <p class="eyebrow">Services</p>
+            <h2>What I do</h2>
+        </div>
+        <div class="services-grid">
+            <article class="service">
+                <h3>Brand Identity</h3>
+                <p>Logos, colour systems and guidelines that keep a brand consistent everywhere.</p>
+            </article>
+            <article class="service">
+                <h3>Print &amp; Posters</h3>
+                <p>Event posters, flyers and packaging built to look sharp on screen and in print.</p>
+            </article>
+            <article class="service">
+                <h3>Social Media</h3>
+                <p>Banners, ad creatives and templates tuned for each platform’s format.</p>
+            </article>
         </div>
     </section>
 
- <!-- About Section -->
-    <section id="about" class="about">
-        <h2>About Me</h2>
-        <p>Hi, I’m <strong>Meedo</strong>, a passionate graphic and web designer. I specialize in creating clean, modern, and visually appealing designs that help brands stand out online. I’ve worked with clients to design logos, posters, and digital marketing visuals.</p>
-    </section>
-
     <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio">
-        <h2>My Works</h2>
+    <section id="portfolio" class="portfolio section">
+        <div class="section-head">
+            <p class="eyebrow">Portfolio</p>
+            <h2>My Works</h2>
+        </div>
         <div class="portfolio-container">
-            <div class="card" data id="1">
-                <img src="https://i.pinimg.com/1200x/69/d5/65/69d5650435e784721d2100b0901d7cba.jpg" alt="Logo Design">
-<h3>Poster Design</h3>
-<div class="like-section">
-    <button class="like-btn">❤️</button>
-    <span class="like-count">0</span>
-     <a href="work2.html" class="see-more">See More</a>
+            <div class="card" data-id="1">
+                <div class="card-media">
+                    <img src="https://i.pinimg.com/1200x/69/d5/65/69d5650435e784721d2100b0901d7cba.jpg" alt="Poster design sample" loading="lazy">
+                    <span class="tag">Print</span>
+                </div>
+                <div class="card-body">
+                    <h3>Poster Design</h3>
+                    <p>Bold typographic posters for a music festival campaign.</p>
+                    <div class="like-section">
+                        <button class="like-btn" aria-label="Like Poster Design" aria-pressed="false">❤️</button>
+                        <span class="like-count">0</span>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <img src="https://i.pinimg.com/1200x/69/d5/65/69d5650435e784721d2100b0901d7cba.jpg" alt="Social Media Banner">
-                <h3>Social Media Banner</h3>
-                <div class="like-section">
-    <button class="like-btn">❤️</button>
-    <span class="like-count">0</span>
-     <a href="work2.html" class="see-more">See More</a>
+            <div class="card" data-id="2">
+                <div class="card-media">
+                    <img src="https://i.pinimg.com/1200x/69/d5/65/69d5650435e784721d2100b0901d7cba.jpg" alt="Social media banner sample" loading="lazy">
+                    <span class="tag">Social</span>
+                </div>
+                <div class="card-body">
+                    <h3>Social Media Banner</h3>
+                    <p>A banner set sized for Instagram, X and LinkedIn launches.</p>
+                    <div class="like-section">
+                        <button class="like-btn" aria-label="Like Social Media Banner" aria-pressed="false">❤️</button>
+                        <span class="like-count">0</span>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <img src="https://i.pinimg.com/1200x/69/d5/65/69d5650435e784721d2100b0901d7cba.jpg" alt="Brand Identity">
-                <h3>Brand Identity</h3>
-                <div class="like-section">
-    <button class="like-btn">❤️</button>
-    <span class="like-count">0</span>
-     <a href="work2.html" class="see-more">See More</a>
+            <div class="card" data-id="3">
+                <div class="card-media">
+                    <img src="https://i.pinimg.com/1200x/69/d5/65/69d5650435e784721d2100b0901d7cba.jpg" alt="Brand identity sample" loading="lazy">
+                    <span class="tag">Branding</span>
+                </div>
+                <div class="card-body">
+                    <h3>Brand Identity</h3>
+                    <p>Logo, palette and type system for a small coffee roastery.</p>
+                    <div class="like-section">
+                        <button class="like-btn" aria-label="Like Brand Identity" aria-pressed="false">❤️</button>
+                        <span class="like-count">0</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <h2>Get In Touch</h2>
-        <form id="contactForm">
-            <input type="text" id="name" placeholder="Your Name" required>
- <textarea id="message" placeholder="Your Message" required></textarea>
+    <section id="contact" class="contact section">
+        <div class="section-head">
+            <p class="eyebrow">Contact</p>
+            <h2>Get In Touch</h2>
+        </div>
+        <form id="contactForm" novalidate>
+            <div class="field-row">
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                <input type="email" id="email" name="email" placeholder="Your Email" required>
+            </div>
+            <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
             <button type="submit" class="btn">Send Message</button>
         </form>
-        <p class="success" id="successMessage"></p>
+        <p class="form-status" id="successMessage" role="status"></p>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p> © 2025 Meedo Graphic | Designed with ❤ by Meedo</p>
+        <p>© 2025 Meedo Graphic | Designed with ❤ by Meedo</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="style.js"></script>
 </body>
 </html>
