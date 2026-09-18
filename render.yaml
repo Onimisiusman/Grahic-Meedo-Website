@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: meedo-graphic
+    runtime: node
+    plan: free
+    buildCommand: cd server && npm ci --omit=dev
+    startCommand: node server/server.js
+    healthCheckPath: /api/likes
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: DATA_DIR
+        value: /var/data
+      - key: ADMIN_TOKEN
+        generateValue: true
+    disk:
+      name: meedo-data
+      mountPath: /var/data
+      sizeGB: 1

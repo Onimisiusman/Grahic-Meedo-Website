@@ -12,7 +12,17 @@ npm start          # http://localhost:3000
 
 The server also serves the static site, so `http://localhost:3000/` loads `hproject.html`.
 
-Requires Node 22.5+ (the database uses the built-in `node:sqlite` module — no native build step).
+Requires Node 24+ (the database uses the built-in `node:sqlite` module, unflagged since Node 23.4 — no native build step).
+
+## Hosting
+
+The site needs a Node host (GitHub Pages can't run the API). Three ready-made paths:
+
+- **Render** — `render.yaml` is a blueprint: point Render at the repo, it builds with `cd server && npm ci --omit=dev`, mounts a 1 GB disk at `/var/data` for the SQLite file, and generates an `ADMIN_TOKEN`.
+- **Railway / Heroku-style** — the `Procfile` (`web: node server/server.js`) is enough; set `DATA_DIR` to a mounted volume so the database survives redeploys.
+- **Docker** (Fly.io, a VPS, anything) — `docker build -t meedo . && docker run -p 3000:3000 -v meedo-data:/data meedo`.
+
+Without a persistent volume the SQLite file is wiped on every redeploy, so likes and messages reset.
 
 ### Environment variables
 
