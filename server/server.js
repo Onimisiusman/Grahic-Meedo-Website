@@ -38,9 +38,13 @@ app.post("/api/likes/:workId", (req, res) => {
 });
 
 app.post("/api/contact", (req, res) => {
-    const name = String(req.body?.name ?? "").trim();
-    const email = String(req.body?.email ?? "").trim();
-    const message = String(req.body?.message ?? "").trim();
+    const fields = [req.body?.name, req.body?.email, req.body?.message];
+
+    if (fields.some(field => field != null && typeof field !== "string")) {
+        return res.status(400).json({ error: "Name, email and message must be strings." });
+    }
+
+    const [name, email, message] = fields.map(field => (field ?? "").trim());
 
     if (!name || !email || !message) {
         return res.status(400).json({ error: "Please fill out all fields." });

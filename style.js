@@ -50,6 +50,25 @@ function renderLike(card, count) {
     card.querySelector(".like-count").textContent = String(count);
 }
 
+// Pull the authoritative count back after a click could not be applied.
+async function reconcile(card, version) {
+    const id = card.dataset.id;
+
+    try {
+        const response = await fetch("/api/likes");
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const likes = await response.json();
+        if (likeRequests.get(id) !== version) return;
+
+        const count = likes[id] ?? 0;
+        renderLike(card, count);
+        localStorage.setItem(`likes-${id}`, String(count));
+    } catch {
+        // Offline or no backend: the local count stands.
+    }
+}
+
 function setLikedState(card, liked) {
     const likeBtn = card.querySelector(".like-btn");
     likeBtn.classList.toggle("liked", liked);
@@ -64,7 +83,8 @@ cards.forEach(card => {
 
     card.querySelector(".like-btn").addEventListener("click", async () => {
         const liked = !card.querySelector(".like-btn").classList.contains("liked");
-        const optimistic = Math.max(0, Number(card.querySelector(".like-count").textContent) + (liked ? 1 : -1));
+        const previous = Number(card.querySelector(".like-count").textContent);
+        const optimistic = Math.max(0, previous + (liked ? 1 : -1));
         const version = likeRequests.get(id) + 1;
         likeRequests.set(id, version);
 
@@ -86,7 +106,14 @@ cards.forEach(card => {
             renderLike(card, count);
             localStorage.setItem(`likes-${id}`, String(count));
         } catch {
-            // Offline or no backend: the optimistic local count stands.
+            if (likeRequests.get(id) !== version) return;
+
+            // The click never landed: undo it, then ask the server for the truth
+            // in case an earlier click of ours did land.
+            setLikedState(card, !liked);
+            renderLike(card, previous);
+            localStorage.setItem(`likes-${id}`, String(previous));
+            reconcile(card, version);
         }
     });
 });
