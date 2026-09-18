@@ -1,0 +1,65 @@
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import express from "express";
+import { addMessage, changeLike, getLikes, listMessages } from "./db.js";
+
+const siteRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const port = Number(process.env.PORT) || 3000;
+const adminToken = process.env.ADMIN_TOKEN;
+
+const app = express();
+app.use(express.json());
+app.use(express.static(siteRoot, { index: "hproject.html", extensions: ["html"] }));
+
+app.get("/api/likes", (req, res) => {
+    res.json(getLikes());
+});
+
+app.post("/api/likes/:workId", (req, res) => {
+    const workId = req.params.workId.trim();
+    const { liked } = req.body ?? {};
+
+    if (!workId || typeof liked !== "boolean") {
+        return res.status(400).json({ error: "Body must be { liked: boolean }." });
+    }
+
+    res.json({ workId, count: changeLike(workId, liked ? 1 : -1) });
+});
+
+app.post("/api/contact", (req, res) => {
+    const name = String(req.body?.name ?? "").trim();
+    const email = String(req.body?.email ?? "").trim();
+    const message = String(req.body?.message ?? "").trim();
+
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: "Please fill out all fields." });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: "Please enter a valid email address." });
+    }
+
+    if (message.length > 5000) {
+        return res.status(400).json({ error: "Message is too long." });
+    }
+
+    const id = addMessage({ name, email, message });
+    res.status(201).json({ id, status: "received" });
+});
+
+// Inbox for the site owner; only enabled when ADMIN_TOKEN is set.
+app.get("/api/messages", (req, res) => {
+    if (!adminToken) {
+        return res.status(404).json({ error: "Not found." });
+    }
+
+    if (req.get("x-admin-token") !== adminToken) {
+        return res.status(401).json({ error: "Unauthorized." });
+    }
+
+    res.json(listMessages());
+});
+
+app.listen(port, () => {
+    console.log(`Meedo Graphic running on http://localhost:${port}`);
+});

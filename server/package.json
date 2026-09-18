@@ -1,0 +1,18 @@
+{
+  "name": "meedo-graphic-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend for the Meedo Graphic portfolio: likes and contact messages.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
