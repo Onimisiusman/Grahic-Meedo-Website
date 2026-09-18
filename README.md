@@ -31,6 +31,7 @@ Without a persistent volume the SQLite file is wiped on every redeploy, so likes
 | `PORT` | `3000` | Port to listen on |
 | `DATA_DIR` | `server/data` | Where `meedo.db` is written |
 | `ADMIN_TOKEN` | unset | Enables `GET /api/messages`; unset means the route returns 404 |
+| `WORK_IDS` | `1,2,3` | Comma-separated ids that accept likes; must match the `data-id` values on the portfolio cards |
 
 ## API
 

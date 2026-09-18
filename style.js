@@ -43,6 +43,9 @@ sections.forEach(section => sectionObserver.observe(section));
 // and keeps the page usable when the API is unreachable (e.g. static hosting).
 const cards = [...document.querySelectorAll(".card")];
 
+// Responses can arrive out of order; only the newest request per card may render.
+const likeRequests = new Map(cards.map(card => [card.dataset.id, 0]));
+
 function renderLike(card, count) {
     card.querySelector(".like-count").textContent = String(count);
 }
@@ -62,6 +65,8 @@ cards.forEach(card => {
     card.querySelector(".like-btn").addEventListener("click", async () => {
         const liked = !card.querySelector(".like-btn").classList.contains("liked");
         const optimistic = Math.max(0, Number(card.querySelector(".like-count").textContent) + (liked ? 1 : -1));
+        const version = likeRequests.get(id) + 1;
+        likeRequests.set(id, version);
 
         setLikedState(card, liked);
         renderLike(card, optimistic);
@@ -76,6 +81,8 @@ cards.forEach(card => {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const { count } = await response.json();
+            if (likeRequests.get(id) !== version) return;
+
             renderLike(card, count);
             localStorage.setItem(`likes-${id}`, String(count));
         } catch {
@@ -84,17 +91,42 @@ cards.forEach(card => {
     });
 });
 
-// Replace the local counts with the shared ones as soon as the API answers.
+// Replace the local counts with the shared ones as soon as the API answers,
+// unless the visitor already clicked a card while the request was in flight.
+const initialLoadVersions = new Map(likeRequests);
+
 fetch("/api/likes")
     .then(response => (response.ok ? response.json() : Promise.reject(new Error("likes unavailable"))))
     .then(likes => {
         cards.forEach(card => {
-            const count = likes[card.dataset.id] ?? 0;
+            const id = card.dataset.id;
+            if (likeRequests.get(id) !== initialLoadVersions.get(id)) return;
+
+            const count = likes[id] ?? 0;
             renderLike(card, count);
-            localStorage.setItem(`likes-${card.dataset.id}`, String(count));
+            localStorage.setItem(`likes-${id}`, String(count));
         });
     })
     .catch(() => {});
+
+// Keep other tabs of this site in sync, so a stale button can't send a
+// duplicate delta for a like this device already registered.
+window.addEventListener("storage", event => {
+    const match = /^(likes|liked)-(.+)$/.exec(event.key ?? "");
+    if (!match) return;
+
+    const [, kind, id] = match;
+    const card = cards.find(candidate => candidate.dataset.id === id);
+    if (!card) return;
+
+    if (kind === "likes") {
+        renderLike(card, event.newValue ?? 0);
+    } else {
+        const likeBtn = card.querySelector(".like-btn");
+        likeBtn.classList.toggle("liked", event.newValue === "true");
+        likeBtn.setAttribute("aria-pressed", String(event.newValue === "true"));
+    }
+});
 
 // ===== Contact form =====
 const form = document.getElementById("contactForm");
