@@ -39,33 +39,68 @@ const sectionObserver = new IntersectionObserver(entries => {
 sections.forEach(section => sectionObserver.observe(section));
 
 // ===== Like Button System =====
-document.querySelectorAll(".card").forEach(card => {
-    const likeBtn = card.querySelector(".like-btn");
-    const likeCount = card.querySelector(".like-count");
-    const id = card.dataset.id;
+// Counts live on the server; localStorage only remembers what this visitor liked
+// and keeps the page usable when the API is unreachable (e.g. static hosting).
+const cards = [...document.querySelectorAll(".card")];
 
-    const liked = localStorage.getItem(`liked-${id}`) === "true";
-    likeCount.textContent = localStorage.getItem(`likes-${id}`) || "0";
+function renderLike(card, count) {
+    card.querySelector(".like-count").textContent = String(count);
+}
+
+function setLikedState(card, liked) {
+    const likeBtn = card.querySelector(".like-btn");
     likeBtn.classList.toggle("liked", liked);
     likeBtn.setAttribute("aria-pressed", String(liked));
+    localStorage.setItem(`liked-${card.dataset.id}`, String(liked));
+}
 
-    likeBtn.addEventListener("click", () => {
-        const nowLiked = !likeBtn.classList.contains("liked");
-        const count = Math.max(0, parseInt(likeCount.textContent, 10) + (nowLiked ? 1 : -1));
+cards.forEach(card => {
+    const id = card.dataset.id;
+    renderLike(card, localStorage.getItem(`likes-${id}`) || 0);
+    setLikedState(card, localStorage.getItem(`liked-${id}`) === "true");
 
-        likeBtn.classList.toggle("liked", nowLiked);
-        likeBtn.setAttribute("aria-pressed", String(nowLiked));
-        likeCount.textContent = count;
-        localStorage.setItem(`liked-${id}`, String(nowLiked));
-        localStorage.setItem(`likes-${id}`, String(count));
+    card.querySelector(".like-btn").addEventListener("click", async () => {
+        const liked = !card.querySelector(".like-btn").classList.contains("liked");
+        const optimistic = Math.max(0, Number(card.querySelector(".like-count").textContent) + (liked ? 1 : -1));
+
+        setLikedState(card, liked);
+        renderLike(card, optimistic);
+        localStorage.setItem(`likes-${id}`, String(optimistic));
+
+        try {
+            const response = await fetch(`/api/likes/${encodeURIComponent(id)}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ liked })
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const { count } = await response.json();
+            renderLike(card, count);
+            localStorage.setItem(`likes-${id}`, String(count));
+        } catch {
+            // Offline or no backend: the optimistic local count stands.
+        }
     });
 });
+
+// Replace the local counts with the shared ones as soon as the API answers.
+fetch("/api/likes")
+    .then(response => (response.ok ? response.json() : Promise.reject(new Error("likes unavailable"))))
+    .then(likes => {
+        cards.forEach(card => {
+            const count = likes[card.dataset.id] ?? 0;
+            renderLike(card, count);
+            localStorage.setItem(`likes-${card.dataset.id}`, String(count));
+        });
+    })
+    .catch(() => {});
 
 // ===== Contact form =====
 const form = document.getElementById("contactForm");
 const status = document.getElementById("successMessage");
 
-form.addEventListener("submit", event => {
+form.addEventListener("submit", async event => {
     event.preventDefault();
 
     const name = form.elements.name.value.trim();
@@ -85,7 +120,30 @@ form.addEventListener("submit", event => {
         return;
     }
 
-    status.textContent = `Thank you, ${name}! Your message has been sent successfully.`;
-    status.className = "form-status success";
-    form.reset();
+    const submitBtn = form.querySelector("button[type=submit]");
+    submitBtn.disabled = true;
+    status.textContent = "Sending…";
+    status.className = "form-status";
+
+    try {
+        const response = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, message })
+        });
+        const payload = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(payload.error || "Something went wrong. Please try again.");
+        }
+
+        status.textContent = `Thank you, ${name}! Your message has been sent successfully.`;
+        status.className = "form-status success";
+        form.reset();
+    } catch (error) {
+        status.textContent = error.message;
+        status.className = "form-status error";
+    } finally {
+        submitBtn.disabled = false;
+    }
 });
